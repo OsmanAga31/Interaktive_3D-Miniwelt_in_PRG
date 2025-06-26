@@ -10,7 +10,12 @@ AssetOrigin:
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TropicalEnvironment_03
+    second: {fileID: 2100000, guid: 25b93d926257dbe4198f8e40ef2c41c5, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

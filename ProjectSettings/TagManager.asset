@@ -5,19 +5,19 @@ TagManager:
   serializedVersion: 3
   tags:
   - CinemachineTarget
-  - Ground
+  - Interactable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - 
   - Water
   - UI
   - 
   - 
-  - Suimono_Water
-  - Suimono_Depth
-  - Suimono_Screen
+  - 
+  - 
+  - 
   - 
   - 
   - 
