@@ -105,8 +105,8 @@ Material:
     - _foam_depth: 10.45
     - _foam_distance: 0.7
     - _foam_power: 1
-    - _foam_scale: 8.79
-    - _foam_speed: 0.01
+    - _foam_scale: 8.75
+    - _foam_speed: 0.005
     - _foam_strength: 0
     - _fresnel_power: 1.12
     - _normal_speed: 3
@@ -119,8 +119,8 @@ Material:
     - _waveColor_speed: 4
     - _wave_scale: 16
     - _wave_speed: 2
-    - _wave_strength: 4
-    - _wave_tile: 1.7
+    - _wave_strength: 4.5
+    - _wave_tile: 50
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
@@ -130,8 +130,8 @@ Material:
     - _foam_color2: {r: 0, g: 0, b: 0, a: 0}
     - _normal_strength: {r: -0.01, g: 0, b: 0, a: 0}
     - _shallow_color: {r: 0, g: 0, b: 0, a: 0}
-    - _waterColor1: {r: 0.25698105, g: 0.6707559, b: 0.85660374, a: 0}
-    - _waterColor2: {r: 0, g: 0.4442654, b: 0.6377357, a: 0}
+    - _waterColor1: {r: 1, g: 0.16184291, b: 0, a: 0}
+    - _waterColor2: {r: 0.040236473, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7403962904411355469

@@ -3,7 +3,92 @@ guid: 506ed68668d02bf41ba5f74fbf6741c7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: c78a0ddcff882444198fd45f6ce40c1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door inside.001
+    second: {fileID: 2100000, guid: 7117b80a0377e7540b6b78037aa52307, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door.001
+    second: {fileID: 2100000, guid: e70b2fa64cf5b594f842a0a9088be895, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: dragon balls.001
+    second: {fileID: 2100000, guid: c510fd2723c76e3449c88bd8b7077163, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: grass.001
+    second: {fileID: 2100000, guid: 7341ef3e38464bb4090ebcce82430c5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: hause.001
+    second: {fileID: 2100000, guid: 0e38a7f7ce77f744f98afc9eaa693653, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: leaf.002
+    second: {fileID: 2100000, guid: a099e10c130b5c343999e92048be9f9b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: metal.001
+    second: {fileID: 2100000, guid: 486ace13eec7e6b4fa4e57f5ed05a3cc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rock.001
+    second: {fileID: 2100000, guid: ca44ca896c3259145be342f744bbaefc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: roof.001
+    second: {fileID: 2100000, guid: 9f46b977be1b3ad48b1fd02d656a2ef0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: sand.001
+    second: {fileID: 2100000, guid: f21e6fc1cc5bc7a47b152551982a5d13, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: star.001
+    second: {fileID: 2100000, guid: 8f0accef1654336408c624826ec157c5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: trunk.002
+    second: {fileID: 2100000, guid: aba3f59a4390c9b4b867f4dcc0476f8e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: water.001
+    second: {fileID: 2100000, guid: 7157f13352744484aacca24ce312f88e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: white window wood.001
+    second: {fileID: 2100000, guid: 9397d3d3b9d13a643b03e74813ebffb8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: windows.001
+    second: {fileID: 2100000, guid: ba126170147e6e749a3902ea71b4944d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wood.001
+    second: {fileID: 2100000, guid: dcd4959818d4eb04cb89f03ef5390f4b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

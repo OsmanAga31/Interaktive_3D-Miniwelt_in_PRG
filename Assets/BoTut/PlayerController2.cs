@@ -1,5 +1,7 @@
+using StarterAssets;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerController2 : MonoBehaviour
@@ -12,6 +14,11 @@ public class PlayerController2 : MonoBehaviour
     [SerializeField] private float jumpStrength;
     private bool isGrounded;
 
+    [Header("Player Rotation")]
+    [SerializeField] private Transform cinemachineCameraTarget;
+
+
+
     // Start is called once before the first exexution of Update after the MonoBehavior is enabled.
     private void Start()
     {
@@ -21,6 +28,7 @@ public class PlayerController2 : MonoBehaviour
         playerInput.actions["Move"].canceled += OnMove;
 
         playerInput.actions["Jump"].performed += OnJump;
+        playerInput.actions["Jump"].canceled += OnJump;
 
         cameraTransform = Camera.main.transform;
 
@@ -36,17 +44,34 @@ public class PlayerController2 : MonoBehaviour
     {
         if (!isGrounded) return; // Only allow jumping if grounded
         rb.AddForce(Vector3.up * jumpStrength);
-        Debug.Log("Jumped!");
+        //Debug.Log("Jumped!");
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         var movementDirection = cameraTransform.right * movementInput.x + cameraTransform.forward * movementInput.y;
         movementDirection = Vector3.ProjectOnPlane(movementDirection, Vector3.up).normalized; // Project onto the horizontal plane
-        transform.Translate(movementDirection * Time.deltaTime * actualMovementSpeed);
-        //rb.MovePosition(movementDirection * Time.deltaTime * actualMovementSpeed);
+        //transform.Translate(movementDirection * Time.deltaTime * actualMovementSpeed);
+        rb.MovePosition(rb.position + movementDirection * Time.fixedDeltaTime * actualMovementSpeed);
         //transform.Translate(new Vector3(movementInput.x, 0, movementInput.y) * Time.deltaTime * actualMovementSpeed);
+    }
+
+    // rotate the player to face the direction of the camera
+    // This is done in LateUpdate to ensure the camera has already updated its position and rotation
+    // made with the help of A.I. in Visual Studio
+    private void PlayerRotation()
+    {
+        if (cinemachineCameraTarget == null) return;
+
+        // Nur die Y-Achse (Yaw) übernehmen
+        Vector3 targetEuler = cinemachineCameraTarget.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(0f, targetEuler.y, 0f);
+    }
+
+    private void LateUpdate()
+    {
+        PlayerRotation();
     }
 
     private void OnCollisionStay(Collision collision)
@@ -58,4 +83,6 @@ public class PlayerController2 : MonoBehaviour
     {
         isGrounded = false;
     }
+
+   
 }
