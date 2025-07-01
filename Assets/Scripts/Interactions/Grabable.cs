@@ -1,38 +1,30 @@
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+public class Grabable : Interactable
 {
-    [SerializeField] private bool isGrabable;
-    [SerializeField] private float grabDistance = 2.0f; // Maximum distance to grab the object
-    [SerializeField] private GameObject grabableEmpty; // Empty GameObject to hold grabable items so they are not in the DontDestroyOnload list
     private Rigidbody rb;
+    private float grabDistance = 2.0f; // Maximum distance to grab the object
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        grabableEmpty = GameObject.Find("GrabableEmpty");
+        if (rb == null)
+        {
+            Debug.LogWarning("Grab script requires a Rigidbody component on the object to be grabbed.");
+        }
     }
 
-    // just to interact with the object
-    public virtual void Interact()
-    {
-        // Default implementation does nothing
-        Debug.Log("Using " + gameObject.name);
-        return;
-    }
-
-    // to grab the object
-    public virtual bool Interact(Transform playerHandTransform)
+    public override bool Interact(Transform playerHandTransform)
     {
         if (rb == null)
         {
             Debug.LogWarning("Cannot grab object without a Rigidbody.");
             return false;
         }
-
+    
         if (playerHandTransform.childCount > 0)
         {
-            transform.SetParent(grabableEmpty.transform); // Unparent the object if already held
+            transform.SetParent(null); // Unparent the object if already held
             rb.isKinematic = false; // Re-enable physics
             Debug.Log("Released " + gameObject.name);
             return true;
@@ -53,11 +45,8 @@ public class Interactable : MonoBehaviour
             Debug.Log("Object is too far away to grab.");
         }
         Debug.Log("Childcount of transform " + playerHandTransform.childCount);
-
+    
         return IsGrabable; // Return the grab state
     }
-
-    // getter and setter for isGrabable
-    public bool IsGrabable { get => isGrabable; set => isGrabable = value; }
 
 }
