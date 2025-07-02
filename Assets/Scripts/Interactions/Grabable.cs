@@ -14,39 +14,62 @@ public class Grabable : Interactable
         }
     }
 
-    public override bool Interact(Transform playerHandTransform)
+    //public override bool Interact(Transform playerHandTransform)
+    //{
+    //    if (rb == null)
+    //    {
+    //        Debug.LogWarning("Cannot grab object without a Rigidbody.");
+    //        return false;
+    //    }
+    
+    //    if (playerHandTransform.childCount > 0)
+    //    {
+    //        transform.SetParent(null); // Unparent the object if already held
+    //        rb.isKinematic = false; // Re-enable physics
+    //        Debug.Log("Released " + gameObject.name);
+    //        return true;
+    //    }
+
+    //    // Check if the player is close enough to grab the object
+    //    float distanceToPlayer = Vector3.Distance(transform.position, playerHandTransform.position);
+    //    if (distanceToPlayer <= grabDistance)
+    //    {
+    //        // Grab the object by parenting it to the player's hand
+    //        rb.isKinematic = true; // Disable physics while holding
+    //        transform.SetParent(playerHandTransform);
+    //        transform.localPosition = Vector3.zero; // Reset position relative to the hand
+    //        Debug.Log("Grabbed " + gameObject.name);
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Object is too far away to grab.");
+    //    }
+    //    Debug.Log("Childcount of transform " + playerHandTransform.childCount);
+    
+    //    return IsGrabable; // Return the grab state
+    //}
+
+    //grabbing the object with lerping it to the player hand
+    public void GrabWithLerp(Transform playerHandTransform, float lerpSpeed = 5f)
     {
         if (rb == null)
         {
             Debug.LogWarning("Cannot grab object without a Rigidbody.");
-            return false;
+            return;
         }
-    
-        if (playerHandTransform.childCount > 0)
+        if (Vector3.Distance(transform.position, playerHandTransform.position) <= grabDistance)
         {
-            transform.SetParent(null); // Unparent the object if already held
-            rb.isKinematic = false; // Re-enable physics
-            Debug.Log("Released " + gameObject.name);
-            return true;
-        }
-
-        // Check if the player is close enough to grab the object
-        float distanceToPlayer = Vector3.Distance(transform.position, playerHandTransform.position);
-        if (distanceToPlayer <= grabDistance)
-        {
-            // Grab the object by parenting it to the player's hand
             rb.isKinematic = true; // Disable physics while holding
             transform.SetParent(playerHandTransform);
             transform.localPosition = Vector3.zero; // Reset position relative to the hand
-            Debug.Log("Grabbed " + gameObject.name);
+            // Lerp the position to the player's hand
+            transform.position = Vector3.Lerp(transform.position, playerHandTransform.position, Time.deltaTime * lerpSpeed);
+            Debug.Log("Grabbed " + gameObject.name + " with lerping.");
         }
         else
         {
-            Debug.Log("Object is too far away to grab.");
+            Debug.Log("Object is too far away to grab with lerping.");
         }
-        Debug.Log("Childcount of transform " + playerHandTransform.childCount);
-    
-        return IsGrabable; // Return the grab state
     }
 
 }

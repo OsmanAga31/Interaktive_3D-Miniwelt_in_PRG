@@ -58,12 +58,14 @@ public class InteractionManager : MonoBehaviour
     private void Start()
     {
         SetPromptVisibility(false);
+
     }
 
     // look out for interactable objects in the scene with raycasting
     private void FixedUpdate()
     {
         // Raycast to find interactable objects
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * maxRaycastDistance, Color.red, 0.02f);
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxRaycastDistance))
         {
