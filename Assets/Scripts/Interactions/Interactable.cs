@@ -10,7 +10,7 @@ public class Interactable : MonoBehaviour
     [SerializeField] private float lerpSpeed; // Speed at which the object will lerp to the player's hand
     private bool isGrabbed = false; // to check if the object is grabbed
     private GameObject grabableEmpty; // Empty GameObject to hold grabable items so they are not in the DontDestroyOnload list
-    [SerializeField] private Transform playerHands; // Reference to the player's hand
+    private Transform playerHands; // Reference to the player's hand
     Collider collider;
 
 
