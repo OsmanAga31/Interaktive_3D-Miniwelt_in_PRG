@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
@@ -36,18 +37,6 @@ public class InteractionManager : MonoBehaviour
                 Debug.LogWarning("No Interactable component found on " + interactable.name);
             }
         }
-        //else if (grabable != null)
-        //{
-        //    Grabable grabComponent = grabable.GetComponent<Grabable>();
-        //    if (grabComponent != null)
-        //    {
-        //        grabComponent.Interact();
-        //    }
-        //    else
-        //    {
-        //        Debug.LogWarning("No Grab component found on " + grabable.name);
-        //    }
-        //}
         else
         {
             Debug.LogWarning("No interactable object set.");
@@ -71,14 +60,23 @@ public class InteractionManager : MonoBehaviour
         {
             if (hit.collider.gameObject.CompareTag("Interactable"))
             {
-                interactable = hit.collider.gameObject;
-                SetPromptVisibility(true);
+                SetPromptAndInteractable(hit.collider.gameObject, true);
             }
             else
             {
-                SetPromptVisibility(false);
+                SetPromptAndInteractable(null, false);
             }
         }
+        else
+        {
+            SetPromptAndInteractable(null, false);
+        }
+    }
+
+    public void SetPromptAndInteractable(GameObject theInteractable, bool promprVisibility)
+    {
+        interactable = theInteractable;
+        SetPromptVisibility(promprVisibility);
     }
 
     private void SetPromptVisibility(bool isVisible)

@@ -3,7 +3,22 @@ guid: 4a65623fc2100024b99398c49920a536
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EYES.002
+    second: {fileID: 2100000, guid: 1e2f915ebc147504399b6ad14488d899, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SHENLONG
+    second: {fileID: 2100000, guid: fd5b24f6d6ee797468ea1f65e290da2d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TEETH.002
+    second: {fileID: 2100000, guid: e98777cf3f78cd54c8fb2471ecaf0201, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

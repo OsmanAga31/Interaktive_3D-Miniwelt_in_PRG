@@ -11,13 +11,11 @@ public class Interactable : MonoBehaviour
     private bool isGrabbed = false; // to check if the object is grabbed
     private GameObject grabableEmpty; // Empty GameObject to hold grabable items so they are not in the DontDestroyOnload list
     private Transform playerHands; // Reference to the player's hand
-    Collider collider;
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
         grabableEmpty = GameObject.Find("GrabableEmpty");
         if (playerHands == null)
         {
@@ -37,42 +35,6 @@ public class Interactable : MonoBehaviour
         return;
     }
 
-    // to grab the object
-    //public virtual bool Interact(Transform playerHandTransform)
-    //{
-    //    if (rb == null)
-    //    {
-    //        Debug.LogWarning("Cannot grab object without a Rigidbody.");
-    //        return false;
-    //    }
-
-    //    if (playerHandTransform.childCount > 0)
-    //    {
-    //        transform.SetParent(grabableEmpty.transform); // Unparent the object if already held
-    //        rb.isKinematic = false; // Re-enable physics
-    //        Debug.Log("Released " + gameObject.name);
-    //        return true;
-    //    }
-
-    //    // Check if the player is close enough to grab the object
-    //    float distanceToPlayer = Vector3.Distance(transform.position, playerHandTransform.position);
-    //    if (distanceToPlayer <= grabDistance)
-    //    {
-    //        // Grab the object by parenting it to the player's hand
-    //        rb.isKinematic = true; // Disable physics while holding
-    //        transform.SetParent(playerHandTransform);
-    //        transform.localPosition = Vector3.zero; // Reset position relative to the hand
-    //        Debug.Log("Grabbed " + gameObject.name);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Object is too far away to grab.");
-    //    }
-    //    Debug.Log("Childcount of transform " + playerHandTransform.childCount);
-
-    //    return IsGrabable; // Return the grab state
-    //}
-
     //grabbing the object with lerping it to the player hand
     public virtual bool Interact(Transform playerHandTransform)
     {
@@ -85,10 +47,6 @@ public class Interactable : MonoBehaviour
         {
             //transform.SetParent(grabableEmpty.transform); // Unparent the object if already held
             rb.isKinematic = false; // Re-enable physics
-            if (collider != null)
-            {
-                //collider.enabled = true; // Re-enable the collider when releasing
-            }
             isGrabbed = false; // Set isGrabbed to false
             Debug.Log("Released " + gameObject.name);
             return true;
@@ -100,10 +58,6 @@ public class Interactable : MonoBehaviour
             // Grab the object by parenting it to the player's hand
             rb.isKinematic = true; // Disable physics while holding
             // disable collider
-            if (collider != null)
-            {
-                //collider.enabled = false; // Disable the collider while grabbing
-            }
             //transform.SetParent(playerHandTransform);
             isGrabbed = true;
             //StartCoroutine(LerpToHand(playerHandTransform, lerpSpeed));

@@ -18,7 +18,7 @@ public class OutOfMap : MonoBehaviour
             resetPoint = playerResetPoint;
             resetRotation = true; // Reset rotation for the player
         }
-        else if (other.CompareTag("Dragonball"))
+        else if (other.name.Contains("Dragonball"))
         {
             resetPoint = dragonballResetpoint;
             resetRotation = false; // Do not reset rotation for the dragonball
@@ -29,12 +29,13 @@ public class OutOfMap : MonoBehaviour
     {
         if (resetPoint != null && gameObjectToReset != null)
         {
-            // Reset the position of the object that entered the trigger
+            // Reset the position and velocity of the object that entered the trigger
             gameObjectToReset.transform.position = resetPoint.position;
+            gameObjectToReset.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; // Reset velocity for the player  
             if (resetRotation)
             {
                 gameObjectToReset.transform.rotation = resetPoint.rotation; // Optional: Reset rotation as well
-                Debug.Log("Player reset rotation.");
+                Debug.Log("Object reset rotation.");
             }
         }
     }
