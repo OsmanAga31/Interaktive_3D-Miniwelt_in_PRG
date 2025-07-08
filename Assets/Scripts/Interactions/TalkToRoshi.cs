@@ -90,7 +90,7 @@ public class TalkToRoshi : Interactable
                 else
                 {
                     Debug.Log("Roshi: Don't forget to deliver the dragonballs when you're ready.");
-                    audioSource.clip = talkAudioClip[5]; // Set the audio clip for the fifth dialogue // 5 bis 6
+                    audioSource.clip = talkAudioClip[5]; // Set the audio clip for the fifth dialogue 
                 }
                 break;
             default:

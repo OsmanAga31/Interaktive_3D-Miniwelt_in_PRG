@@ -14,10 +14,12 @@ public class StartShenlongEvent : MonoBehaviour
     [SerializeField] private GameObject smokeParent;
     [SerializeField] private float spawnDelay = 2f; // Delay before Shenlong appears
     [SerializeField] private bool isSummoned = false;
+    [SerializeField] private GameObject ticTacToeParent; // Parent GameObject for the TicTacToe fields    
 
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI dragonBallUIcount; // Assign in the inspector to show UI when dragon balls are collected
-    [SerializeField] private TextMeshProUGUI tictactoe; // Assign in the inspector to show UI when dragon balls are collected
+    [SerializeField] private TextMeshProUGUI tictactoe; 
+    [SerializeField] private GameObject gotToMainIslandText; 
     [SerializeField] private GameObject roshi;
 
     [Header("Audio Settings")]
@@ -108,6 +110,8 @@ public class StartShenlongEvent : MonoBehaviour
     private IEnumerator EnableTicTacToePoints()
     {
         yield return new WaitForSeconds(audioSource.clip.length); // Wait for 2 seconds before enabling the Tic Tac Toe points
+        gotToMainIslandText.SetActive(true);
+        ticTacToeParent.SetActive(true); // Enable the Tic Tac Toe parent GameObject
         if (tictactoe != null)
         {
             tictactoe.gameObject.SetActive(true); // Enable the Tic Tac Toe UI
