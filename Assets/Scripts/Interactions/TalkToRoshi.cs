@@ -17,6 +17,7 @@ public class TalkToRoshi : Interactable
     [Header("Quest Settings")]
     [SerializeField] private GameObject QuestStatus; // UI Text to show the quest status
     [SerializeField] private bool skipAudio;
+    [SerializeField] private GameObject bowlForDragonballKameHouse; // Reference to the CollectDragonballs script
 
     private void Start()
     {
@@ -73,6 +74,7 @@ public class TalkToRoshi : Interactable
                     dialogueIndex++;
                     audioSource.clip = talkAudioClip[1]; // Submitting task 1 & getting task 2
                     SwitchQuests(); // Switch to the next quest status
+                    bowlForDragonballKameHouse.GetComponent<SphereCollider>().enabled = false; // Enable the collider for the bowl to collect dragonballs
                 }
                 else
                 {

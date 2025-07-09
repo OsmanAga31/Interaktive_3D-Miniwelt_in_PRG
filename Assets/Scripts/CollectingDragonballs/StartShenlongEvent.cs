@@ -15,6 +15,7 @@ public class StartShenlongEvent : MonoBehaviour
     [SerializeField] private float spawnDelay = 2f; // Delay before Shenlong appears
     [SerializeField] private bool isSummoned = false;
     [SerializeField] private GameObject ticTacToeParent; // Parent GameObject for the TicTacToe fields    
+    [SerializeField] private GameObject lendingHandObject;
 
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI dragonBallUIcount; // Assign in the inspector to show UI when dragon balls are collected
@@ -61,6 +62,10 @@ public class StartShenlongEvent : MonoBehaviour
             {
                 smokeParent.SetActive(true); // Activate the smoke effect
                 StartCoroutine(StartTheShenlongEvent()); // Start the Shenlong event
+            }
+            if (dragonBallCount == 3 && dragonBallCount <= 4)
+            {
+                lendingHandObject.SetActive(true); // Activate the lending hand object when 3 or 4 dragon balls are collected
             }
         }
     }

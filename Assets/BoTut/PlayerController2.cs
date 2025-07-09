@@ -42,7 +42,7 @@ public class PlayerController2 : MonoBehaviour
 
     public void OnJump(CallbackContext ctx)
     {
-        if (!isGrounded) return; // Only allow jumping if grounded
+        if (!ctx.started && !isGrounded) return; // Only allow jumping if grounded
         rb.AddForce(Vector3.up * jumpStrength);
         //Debug.Log("Jumped!");
     }
@@ -50,6 +50,14 @@ public class PlayerController2 : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // raycast down to check if the player is grounded
+        RaycastHit hit;
+        Vector3 rayOrigin = new Vector3(transform.position.x, transform.position.y - (transform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.05f, transform.position.z); // Adjust the origin to the bottom of the capsule collider
+        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, out hit, 0.15f); // Adjust the distance as needed
+        Debug.DrawRay(rayOrigin, Vector3.down*0.15f, Color.red, 0.1f); // Visualize the raycast in the editor
+        //Debug.Log("Is Grounded: " + isGrounded);
+
+
         var movementDirection = cameraTransform.right * movementInput.x + cameraTransform.forward * movementInput.y;
         movementDirection = Vector3.ProjectOnPlane(movementDirection, Vector3.up).normalized; // Project onto the horizontal plane
         //transform.Translate(movementDirection * Time.deltaTime * actualMovementSpeed);
@@ -74,15 +82,15 @@ public class PlayerController2 : MonoBehaviour
         PlayerRotation();
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        isGrounded = true;
-    }
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    isGrounded = true;
+    //}
 
-    private void OnCollisionExit(Collision collision)
-    {
-        isGrounded = false;
-    }
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    isGrounded = false;
+    //}
 
    
 }

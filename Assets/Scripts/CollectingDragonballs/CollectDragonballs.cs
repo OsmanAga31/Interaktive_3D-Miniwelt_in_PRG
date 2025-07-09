@@ -7,7 +7,6 @@ public class CollectDragonballs : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI dragonBallUIiTask; // Assign in the inspector to show UI when dragon balls are collected
     [SerializeField] private TextMeshProUGUI dragonBallUIiCount; // Assign in the inspector to show UI when dragon balls are collected
-    Collider collider;
     private int dragonBallCount = 0; // Initialize the dragon ball count
 
     [SerializeField] private AudioSource audioSource; // Optional: Assign an AudioSource to play sounds when collecting dragon balls
@@ -28,7 +27,6 @@ public class CollectDragonballs : MonoBehaviour
             Debug.LogError("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
         }
 
-        collider = GetComponent<SphereCollider>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,7 +40,6 @@ public class CollectDragonballs : MonoBehaviour
             if (dragonBallCount >= 7) // Check if the required number of dragon balls is collected
             {
                 Debug.Log("All Dragonballs collected!"); // You can trigger any event here, like starting Shenlong event
-                collider.enabled = false; // Disable the collider to prevent further collection
                 audioSource.clip = audioClip; // Assign the audio clip to the AudioSource
                 audioSource.Play(); // Play a sound if an AudioSource is assigned
                 FadeOutAndInUI(); // Call the method to fade out and in the UI elements
