@@ -10,6 +10,5 @@ public class EnterKameHouseShowroom : Interactable
         // enter scene KameHouseShowRoom
         UnityEngine.SceneManagement.SceneManager.LoadScene("KameHouseShowRoom");
 
-        return; // Return the value of IsGrabable
     }
 }

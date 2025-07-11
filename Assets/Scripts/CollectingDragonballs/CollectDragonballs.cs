@@ -75,7 +75,7 @@ public class CollectDragonballs : MonoBehaviour
         }
         else
         {
-            Debug.LogError("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
+            Debug.LogWarning("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
         }
     }
 

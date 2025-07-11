@@ -5,9 +5,17 @@ public class OutOfMap : MonoBehaviour
 {
     [SerializeField] private Transform playerResetPoint; // Assign your spawn point in the inspector
     [SerializeField] private Transform dragonballResetpoint;
+    [SerializeField] private GameObject player;
     private Transform resetPoint;
     private bool resetRotation = true; // Optional: Reset rotation as well
     private GameObject gameObjectToReset;
+
+    private void Start()
+    {
+        resetPoint = playerResetPoint; // Default reset point
+        resetRotation = true;
+        ResetPosition(); // Reset position at the start
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,13 +25,15 @@ public class OutOfMap : MonoBehaviour
         {
             resetPoint = playerResetPoint;
             resetRotation = true; // Reset rotation for the player
+            ResetPosition();
         }
         else if (other.name.Contains("Dragonball"))
         {
             resetPoint = dragonballResetpoint;
             resetRotation = false; // Do not reset rotation for the dragonball
+            ResetPosition();
         }
-        ResetPosition();
+        
     }
     private void ResetPosition()
     {
