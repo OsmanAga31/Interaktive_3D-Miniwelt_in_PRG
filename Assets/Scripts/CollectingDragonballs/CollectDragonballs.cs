@@ -1,53 +1,77 @@
+using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// Manages the collection of Dragon Balls and updates UI elements accordingly.
+/// Handles quest progression and communication with other game systems when collection goals are met.
+/// </summary>
 public class CollectDragonballs : MonoBehaviour
 {
+    // UI text element for displaying the current collection task
+    [SerializeField] private TextMeshProUGUI dragonBallUIiTask;
 
-    [SerializeField] private TextMeshProUGUI dragonBallUIiTask; // Assign in the inspector to show UI when dragon balls are collected
-    [SerializeField] private TextMeshProUGUI dragonBallUIiCount; // Assign in the inspector to show UI when dragon balls are collected
-    private int dragonBallCount = 0; // Initialize the dragon ball count
+    // UI text element for displaying the current Dragon Ball count
+    [SerializeField] private TextMeshProUGUI dragonBallUIiCount;
 
-    [SerializeField] private AudioSource audioSource; // Optional: Assign an AudioSource to play sounds when collecting dragon balls
+    // Current count of collected Dragon Balls
+    private int dragonBallCount = 0;
+
+    // Audio source for playing collection sound effects
+    [SerializeField] private AudioSource audioSource;
+
+    // Audio clip to play when collection goals are achieved
     [SerializeField] private AudioClip audioClip;
 
+    // Reference to the Roshi GameObject for quest progression
     [SerializeField] private GameObject roshi;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Initialize the UI elements and validate component assignments
+    /// </summary>
     void Start()
     {
-        // Initialize the UI count
+        // Initialize the UI count display
         if (dragonBallUIiCount != null)
         {
             UpdateDragonballUiCount();
         }
         else
         {
-            Debug.LogError("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
+            Debug.LogError("DragonBall UI Count TextMeshProUGUI is not assigned in the inspector.");
         }
-
     }
 
+    /// <summary>
+    /// Handle Dragon Ball collection when objects enter the trigger zone
+    /// </summary>
+    /// <param name="other">Collider of the object entering the trigger</param>
     private void OnTriggerEnter(Collider other)
     {
+        // Only process objects that contain "Dragonball" in their name
         if (other.gameObject.name.Contains("Dragonball"))
         {
-            dragonBallCount++; // Increment the count when a dragon ball is collected
-            UpdateDragonballUiCount(); // Update the UI count
+            dragonBallCount++; // Increment the collection counter
+            UpdateDragonballUiCount(); // Update the UI display
             Debug.Log($"Dragonballs collected: {dragonBallCount}");
 
-            if (dragonBallCount >= 7) // Check if the required number of dragon balls is collected
+            // Check if all required Dragon Balls have been collected
+            if (dragonBallCount >= 7)
             {
-                Debug.Log("All Dragonballs collected!"); // You can trigger any event here, like starting Shenlong event
-                audioSource.clip = audioClip; // Assign the audio clip to the AudioSource
-                audioSource.Play(); // Play a sound if an AudioSource is assigned
-                FadeOutAndInUI(); // Call the method to fade out and in the UI elements
+                Debug.Log("All Dragonballs collected!");
 
+                // Play completion audio
+                audioSource.clip = audioClip;
+                audioSource.Play();
+
+                // Update UI to show new task
+                FadeOutAndInUI();
+
+                // Update Roshi's quest status
                 if (roshi != null)
                 {
-                    roshi.GetComponent<TalkToRoshi>().SetCollectedDragonballs(true); // Set the collectedDragonballs flag to true in TalkToRoshi script
-                    roshi.GetComponent<TalkToRoshi>().SwitchQuests(); // Switch to the next quest status
+                    roshi.GetComponent<TalkToRoshi>().SetCollectedDragonballs(true);
+                    roshi.GetComponent<TalkToRoshi>().SwitchQuests();
                 }
                 else
                 {
@@ -57,68 +81,84 @@ public class CollectDragonballs : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handle Dragon Ball removal when objects exit the trigger zone
+    /// </summary>
+    /// <param name="other">Collider of the object exiting the trigger</param>
     private void OnTriggerExit(Collider other)
     {
+        // Only process objects that contain "Dragonball" in their name
         if (other.gameObject.name.Contains("Dragonball"))
         {
-            dragonBallCount--; // Decrement the count when exiting the trigger area
-            UpdateDragonballUiCount(); // Update the UI count
+            dragonBallCount--; // Decrement the collection counter
+            UpdateDragonballUiCount(); // Update the UI display
         }
     }
 
-
+    /// <summary>
+    /// Update the UI text to display the current Dragon Ball count
+    /// </summary>
     private void UpdateDragonballUiCount()
     {
         if (dragonBallUIiCount != null)
         {
-            dragonBallUIiCount.text = dragonBallCount.ToString(); // Update the UI text
+            dragonBallUIiCount.text = dragonBallCount.ToString();
         }
         else
         {
-            Debug.LogWarning("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
+            Debug.LogWarning("DragonBall UI Count TextMeshProUGUI is not assigned in the inspector.");
         }
     }
 
-    // fade out then in the task and count UI elements
+    /// <summary>
+    /// Initiate fade out and fade in animations for UI elements when collection is complete
+    /// </summary>
     public void FadeOutAndInUI()
     {
         if (dragonBallUIiTask != null && dragonBallUIiCount != null)
         {
-            StartCoroutine(FadeOutAndInCoroutine(dragonBallUIiTask, false));
-            StartCoroutine(FadeOutAndInCoroutine(dragonBallUIiCount, true));
+            StartCoroutine(FadeOutAndInCoroutine(dragonBallUIiTask, false)); // Fade task text
+            StartCoroutine(FadeOutAndInCoroutine(dragonBallUIiCount, true)); // Fade count text
         }
         else
         {
-            Debug.LogError("DragonBall UI TextMeshProUGUI is not assigned in the inspector.");
+            Debug.LogError("DragonBall UI TextMeshProUGUI components are not assigned in the inspector.");
         }
     }
-    private System.Collections.IEnumerator FadeOutAndInCoroutine(TextMeshProUGUI uiElement, bool isCount)
+
+    /// <summary>
+    /// Coroutine that handles the fade out and fade in animation for UI elements
+    /// </summary>
+    /// <param name="uiElement">The UI element to animate</param>
+    /// <param name="isCount">Whether this element is the count display (affects text content)</param>
+    /// <returns>IEnumerator for coroutine execution</returns>
+    private IEnumerator FadeOutAndInCoroutine(TextMeshProUGUI uiElement, bool isCount)
     {
         if (uiElement != null)
         {
-            // Fade out
+            // Fade out animation
             for (float alpha = 1f; alpha >= 0f; alpha -= 0.1f)
             {
                 uiElement.alpha = alpha;
                 yield return new WaitForSeconds(0.1f);
             }
 
+            // Update text content based on element type
             if (!isCount)
             {
-                uiElement.text = "Dragonballs Delivered:"; // Set New Task
+                uiElement.text = "Dragonballs Delivered:"; // Set new task text
             }
             else
             {
-                uiElement.text = "0"; // reset the count to 0
+                uiElement.text = "0"; // Reset count display to 0
             }
 
-            // Fade in
+            // Fade in animation
             for (float alpha = 0f; alpha <= 1f; alpha += 0.1f)
-                {
-                    uiElement.alpha = alpha;
-                    yield return new WaitForSeconds(0.1f);
-                }
+            {
+                uiElement.alpha = alpha;
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
-
 }

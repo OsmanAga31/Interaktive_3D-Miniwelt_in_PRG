@@ -1,12 +1,19 @@
 using UnityEngine;
 
-// Made fully with A.I. in Visual Studio
+/// <summary>
+/// Launches objects (such as the player) towards a target location with a calculated arc,
+/// simulating a jump pad effect.
+/// </summary>
 public class JumpPad : MonoBehaviour
 {
     [SerializeField] private Transform targetLocation;
     [SerializeField] private float heightMultiplier;
     [SerializeField] private float gravity = -9.81f;
 
+    /// <summary>
+    /// Detects when a collider enters the trigger and launches it if it has a Rigidbody.
+    /// </summary>
+    /// <param name="other">The collider that entered the trigger.</param>
     private void OnTriggerEnter(Collider other)
     {
         Rigidbody rb = other.attachedRigidbody;
@@ -15,6 +22,11 @@ public class JumpPad : MonoBehaviour
         LaunchPlayer(rb);
     }
 
+    /// <summary>
+    /// Calculates and applies the launch velocity to move the Rigidbody to the target location
+    /// with a parabolic arc based on the specified height multiplier and gravity.
+    /// </summary>
+    /// <param name="rb">The Rigidbody to launch.</param>
     private void LaunchPlayer(Rigidbody rb)
     {
         Vector3 start = transform.position;
@@ -25,24 +37,27 @@ public class JumpPad : MonoBehaviour
         float yOffset = displacement.y;
         float xzDistance = displacementXZ.magnitude;
 
-        // Zielhöhe über Startpunkt
+        // Calculate the apex height of the arc
         float apexHeight = Mathf.Max(yOffset + heightMultiplier, heightMultiplier);
 
-        // Flugzeit bis zum Scheitelpunkt
+        // Calculate time to reach the apex and from apex to target
         float timeToApex = Mathf.Sqrt(2 * apexHeight / -gravity);
-        // Flugzeit vom Scheitelpunkt zum Ziel
         float timeFromApex = Mathf.Sqrt(2 * (apexHeight - yOffset) / -gravity);
         float totalTime = timeToApex + timeFromApex;
 
-        // Anfangsgeschwindigkeit
+        // Calculate initial velocity components
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * apexHeight);
         Vector3 velocityXZ = displacementXZ / totalTime;
 
+        // Combine vertical and horizontal velocities for launch
         Vector3 launchVelocity = velocityXZ + velocityY;
 
         rb.linearVelocity = launchVelocity;
     }
 
+    /// <summary>
+    /// Draws a line in the editor from the jump pad to the target location for visualization.
+    /// </summary>
     private void OnDrawGizmos()
     {
         if (targetLocation == null) return;

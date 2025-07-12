@@ -1,22 +1,30 @@
 using UnityEngine;
 
+/// <summary>
+/// Ensures a single persistent instance of this manager exists across scene loads.
+/// Handles cursor locking for the application.
+/// </summary>
 public class PersistanceManager : MonoBehaviour
 {
     private static PersistanceManager instance;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initializes the singleton instance and applies cursor lock settings.
+    /// </summary>
     void Start()
     {
-        if(instance == null)
+        // Implement singleton pattern to persist this object across scenes
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if(instance != this)
+        else if (instance != this)
         {
             Destroy(gameObject);
-        }    
-        //Cursor.visible = false; // Hide the cursor
-        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
+        }
+
+        // Lock the cursor to the center of the screen
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

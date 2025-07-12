@@ -1,54 +1,70 @@
+using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Represents an individual Tic-Tac-Toe cell that can be interacted with by the player
+/// </summary>
 public class TicTacToe : Interactable
 {
-    [SerializeField] private TicTacToeSymbols symbol; // Symbol for the TicTacToe field (X or O)
-    private TicTacToeManager TicTacToeManager; // Reference to the TicTacToeManager
+    // Current symbol state of this cell (X, O, or Empty)
+    [SerializeField] private TicTacToeSymbols symbol;
 
-
+    /// <summary>
+    /// Initialize the cell with an empty symbol state
+    /// </summary>
     void Start()
     {
-        // Initialize the TicTacToe field with a default symbol
         symbol = TicTacToeSymbols.Empty;
     }
 
+    /// <summary>
+    /// Handle player interaction with this Tic-Tac-Toe cell
+    /// </summary>
     public override void Interact()
     {
+        // Prevent interaction if cell is already occupied
         if (symbol != TicTacToeSymbols.Empty)
         {
-            // If the field is already occupied, do nothing
             Debug.Log("Field already occupied: " + gameObject.name);
             return;
         }
 
-        TicTacToeManager.instance.SetColliderForAllFields(false); // Disable colliders for all TicTacToe fields
+        // Disable all cell interactions during turn processing
+        TicTacToeManager.instance.SetColliderForAllFields(false);
 
+        // Handle first round special case with Roshi speech
         if (TicTacToeManager.instance.IsFirstRoundF)
         {
-            // Check if it's the first round
-            TicTacToeManager.instance.IsFirstRoundF = false; // Set to false after the first interaction
+            TicTacToeManager.instance.IsFirstRoundF = false;
             int rnd = Random.Range(0, TicTacToeManager.instance.speechStartGame.Length);
             Debug.Log("randomVoiecLine: " + rnd + " ");
-            TicTacToeManager.instance.roshiSource.clip = TicTacToeManager.instance.speechStartGame[rnd]; // Set Roshi's audio clip
-            TicTacToeManager.instance.roshiSource.Play(); // Play Roshi's audio clip
+            TicTacToeManager.instance.roshiSource.clip = TicTacToeManager.instance.speechStartGame[rnd];
+            TicTacToeManager.instance.roshiSource.Play();
         }
 
-        TicTacToeManager.instance.PlaceSymbol(this, TicTacToeSymbols.X); // Place the symbol in the TicTacToe field
+        // Place player's symbol (X) in this cell
+        TicTacToeManager.instance.PlaceSymbol(this, TicTacToeSymbols.X);
 
+        // Trigger Roshi's turn if game is still ongoing
         if (TicTacToeManager.instance.GetPlaceCount() < 9)
-            StartCoroutine(TicTacToeManager.instance.RoshiTurn()); // Start Roshi's turn after placing the symbol
-
-        // Default interaction logic for TicTacToe
+            StartCoroutine(TicTacToeManager.instance.RoshiTurn());
     }
 
+    /// <summary>
+    /// Get the current symbol of this cell
+    /// </summary>
+    /// <returns>The current TicTacToeSymbols value</returns>
     public TicTacToeSymbols GetSymbol()
     {
-        return symbol; // Return the current symbol of the TicTacToe field
+        return symbol;
     }
 
+    /// <summary>
+    /// Set the symbol for this cell
+    /// </summary>
+    /// <param name="newSymbol">The new symbol to assign to this cell</param>
     public void SetSymbol(TicTacToeSymbols newSymbol)
     {
-        symbol = newSymbol; // Set the symbol for the TicTacToe field
+        symbol = newSymbol;
     }
-
 }

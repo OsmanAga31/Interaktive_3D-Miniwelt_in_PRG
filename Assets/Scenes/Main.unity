@@ -4078,7 +4078,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 794264958}
-  - component: {fileID: 794264957}
   - component: {fileID: 794264959}
   m_Layer: 0
   m_Name: LightingManager
@@ -4087,43 +4086,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &794264957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 794264956}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6289ad34a168ded4eb13ff4f2af99637, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SunDirectionalLight: {fileID: 364139640}
-  Preset: {fileID: 11400000, guid: 10703449fc64e7143a3eb054ef487398, type: 2}
-  rotationAxis: 0
-  IsDayCycleOn: 1
-  RandomStartTime: 0
-  TimeOfDay: 12
-  StartTime: 12
-  CycleDuration: 360
-  morningInterval: {x: 0, y: 0.5}
-  afterNoonInterval: {x: 0.5, y: 1}
-  lightIntensity: {x: 0, y: 0.3}
-  IsShadowChangeOn: 0
-  shadowStrength: 0.5
-  IsSkyBoxOn: 0
-  skyboxMat: {fileID: 0}
-  customPropertyName: 
-  IsMoonActive: 1
-  MoonDirectionalLight: {fileID: 1399693721}
-  IsMoonRotationOn: 1
-  MoonIntensity: {x: 0, y: 1}
-  MoonShadowStrength: 0.5
-  IsEventsOn: 0
-  events: []
-  eventsTolerance: 0.2
-  ResetEventsTime: 0.1
 --- !u!4 &794264958
 Transform:
   m_ObjectHideFlags: 0

@@ -1,57 +1,70 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+
+/// <summary>
+/// Animates text by revealing it letter by letter and then moves the text UI element
+/// to a target position with a smooth curve, finally hiding it after a delay.
+/// </summary>
 public class AnimateText : MonoBehaviour
 {
-    [SerializeField] private float animationSpeed = 0.01f; // Speed of the text animation
-    [SerializeField] private string fullText; // The complete text to animate
-    private string currentText = ""; // The text currently displayed
+    [SerializeField] private float animationSpeed = 0.01f;
+    [SerializeField] private string fullText;
+    private string currentText = "";
+
+    /// <summary>
+    /// Starts the text animation coroutine on initialization.
+    /// </summary>
     void Start()
     {
-        StartCoroutine(AnimateTextCoroutine()); // Start the text animation coroutine
+        StartCoroutine(AnimateTextCoroutine());
     }
-    private System.Collections.IEnumerator AnimateTextCoroutine()
+
+    /// <summary>
+    /// Coroutine that reveals the text one character at a time at the specified speed.
+    /// </summary>
+    private IEnumerator AnimateTextCoroutine()
     {
         foreach (char letter in fullText)
         {
-            currentText += letter; // Add one letter at a time
-            GetComponent<TMP_Text>().text = currentText; // Update the UI Text component
-            yield return new WaitForSeconds(animationSpeed); // Wait for the specified speed before adding the next letter
+            currentText += letter;
+            GetComponent<TMP_Text>().text = currentText;
+            yield return new WaitForSeconds(animationSpeed);
         }
-        StartCoroutine(MoveTextToEnd()); // Start moving the text to the end after the animation is complete
+        StartCoroutine(MoveTextToEnd());
     }
 
-    // move the text to the end of the animation to posX: 530 posY: 468 posZ: 0 in a curve in recttransform using sine for smooth curve effect starting slow on x and fast on y
+    /// <summary>
+    /// Moves the text to a target position using a curved path (sine/tan interpolation).
+    /// </summary>
     public IEnumerator MoveTextToEnd()
     {
         yield return new WaitForSeconds(1.25f);
-        yield return null;
         RectTransform rectTransform = GetComponent<RectTransform>();
         Vector3 startPosition = rectTransform.anchoredPosition;
-        Vector3 endPosition = new Vector3(545, 468, 0); // Target position
-        float duration = 2f; // Duration of the movement
+        Vector3 endPosition = new Vector3(545, 468, 0);
+        float duration = 2f;
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
-            float t = elapsedTime / duration; // Normalize time
-            // Use sine for smooth curve effect
+            float t = elapsedTime / duration;
+            // Use tan for x and sine for y for a smooth curve effect
             float x = Mathf.Lerp(startPosition.x, endPosition.x, Mathf.Tan(t * Mathf.PI / 2));
-            float y = Mathf.Lerp(startPosition.y, endPosition.y, Mathf.Sin(t * Mathf.PI / 2)); // Sine curve for y
+            float y = Mathf.Lerp(startPosition.y, endPosition.y, Mathf.Sin(t * Mathf.PI / 2));
             rectTransform.anchoredPosition = new Vector3(x, y, 0);
-            yield return null; // Wait for the next frame
+            yield return null;
         }
-        rectTransform.anchoredPosition = endPosition; // Ensure the final position is set
-        StartCoroutine(HideSelf()); // Start hiding the text after moving
-
+        rectTransform.anchoredPosition = endPosition;
+        StartCoroutine(HideSelf());
     }
 
+    /// <summary>
+    /// Hides the GameObject after a delay.
+    /// </summary>
     private IEnumerator HideSelf()
     {
         yield return new WaitForSeconds(15);
-        gameObject.SetActive(false); // Hide the GameObject after the animation
+        gameObject.SetActive(false);
     }
-
-
-
 }

@@ -1,39 +1,54 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Collections;
 
+/// <summary>
+/// Manages the TicTacToe game logic, including player moves, AI turns, win/loss detection, and game state management.
+/// Handles both player (X) and AI (O) interactions with the game board.
+/// </summary>
 public class TicTacToeManager : MonoBehaviour
 {
     [Header("TicTacToeFields")]
-    [SerializeField] private TicTacToe[] ticTacToeFields; // Reference to the TicTacToe script // 1-3 row one, 4-6 row two, 7-9 row three
-    [SerializeField] private GameObject tttX; // Prefab for the TicTacToe field
-    [SerializeField] private GameObject tttO; // Prefab for the TicTacToe field
-    [SerializeField] private TextMeshProUGUI win_loss_text; // Text to display the current player's turn
-    private List<GameObject> placedSymbols;
-    private GameObject ttt;
-    private int placeCount = 0; // Counter for the number of placed symbols
-    private int timesWon = 0; // Counter for the number of times won
-    private int timesLost = 0; // Counter for the number of times lost
+    [SerializeField] private TicTacToe[] ticTacToeFields; // Array of 9 TicTacToe fields (indexed 0-8: rows 1-3, columns 1-3)
+    [SerializeField] private GameObject tttX; // Prefab for X symbol
+    [SerializeField] private GameObject tttO; // Prefab for O symbol
+    [SerializeField] private TextMeshProUGUI win_loss_text; // UI text displaying win/loss count
+
+    // Game state tracking
+    private List<GameObject> placedSymbols; // List of instantiated symbol GameObjects for cleanup
+    private GameObject ttt; // Temporary reference for symbol instantiation
+    private int placeCount = 0; // Total number of symbols placed on the board
+    private int timesWon = 0; // Player wins counter
+    private int timesLost = 0; // Player losses counter
 
     [Header("RoshiText")]
-    [SerializeField] public AudioSource roshiSource; // Audio source for Roshi's talking
-    [SerializeField] public AudioClip[] speechStartGame; // Text to display when Roshi is talking
-    private bool isFirstRound = true;  // Flag to check if it's the first round
+    [SerializeField] public AudioSource roshiSource; // Audio source for AI character voice
+    [SerializeField] public AudioClip[] speechStartGame; // Audio clips for game start dialogue
+    private bool isFirstRound = true; // Flag to track if this is the first game round
 
-    public static TicTacToeManager instance;
+    public static TicTacToeManager instance; // Singleton instance for global access
 
+    /// <summary>
+    /// Initialize the game manager and set up the singleton instance.
+    /// </summary>
     private void Start()
     {
-        instance = this;
-
-        placedSymbols = new List<GameObject>();
+        instance = this; // Set singleton instance
+        placedSymbols = new List<GameObject>(); // Initialize the placed symbols list
     }
 
+    /// <summary>
+    /// Places a symbol (X or O) on the specified field and updates game state.
+    /// Handles symbol instantiation, physics setup, and turn management.
+    /// </summary>
+    /// <param name="field">The TicTacToe field to place the symbol on</param>
+    /// <param name="symbol">The symbol type to place (X or O)</param>
     public void PlaceSymbol(TicTacToe field, TicTacToeSymbols symbol)
     {
-        placeCount++; // Increment the place count
+        placeCount++; // Track total symbols placed
+
+        // Instantiate the appropriate symbol prefab
         if (symbol == TicTacToeSymbols.X)
         {
             ttt = Instantiate(tttX, field.transform.position, tttX.transform.rotation);
@@ -42,161 +57,202 @@ public class TicTacToeManager : MonoBehaviour
         {
             ttt = Instantiate(tttO, field.transform.position, tttO.transform.rotation);
         }
-        ttt.AddComponent<BoxCollider>(); // Add a BoxCollider component to the placed symbol
-        ttt.GetComponent<BoxCollider>().size *= 0.9f;
-        ttt.AddComponent<Rigidbody>(); // Add a Rigidbody component to the placed symbol
-        placedSymbols.Add(ttt);
-        ttt = null;
-       
-        bool setCollider; // Flag to check if colliders should be enabled
-        if (symbol == TicTacToeSymbols.X)
-        {
-            setCollider = false; // Disable colliders for X symbol
-        }
-        else
-        {
-            setCollider = true; // Enable colliders for O symbol
-        }
 
+        // Add physics components to the placed symbol
+        ttt.AddComponent<BoxCollider>(); // Add collision detection
+        ttt.GetComponent<BoxCollider>().size *= 0.9f; // Scale down collider slightly
+        ttt.AddComponent<Rigidbody>(); // Add physics simulation
+        placedSymbols.Add(ttt); // Track for cleanup
+        ttt = null; // Clear temporary reference
+
+        // Determine collider state based on symbol type
+        bool setCollider = (symbol == TicTacToeSymbols.O); // Enable colliders for O (AI), disable for X (player)
+
+        // Update colliders for all occupied fields
         foreach (var item in ticTacToeFields)
         {
             if (item.GetSymbol() != TicTacToeSymbols.Empty)
-                item.GetComponent<Collider>().enabled = setCollider; // Enable the colliders for all TicTacToe fields
-
+                item.GetComponent<Collider>().enabled = setCollider;
         }
 
-        field.SetSymbol(symbol); // Set the symbol for the TicTacToe field
-        CheckIfWon(); // Check if the game is won after placing the symbol
+        field.SetSymbol(symbol); // Update field's symbol state
+        CheckIfWon(); // Check for win condition after placement
     }
 
-    //
-
-    //get count of placed symbols
+    /// <summary>
+    /// Returns the total number of symbols placed on the board.
+    /// </summary>
+    /// <returns>Current placement count</returns>
     public int GetPlaceCount()
     {
-        return placeCount; // Return the number of placed symbols
+        return placeCount;
     }
 
+    /// <summary>
+    /// Handles the AI's turn by selecting a random empty field and placing an O symbol.
+    /// Includes a delay to make the AI move feel more natural.
+    /// </summary>
+    /// <returns>IEnumerator for coroutine execution</returns>
     public IEnumerator RoshiTurn()
     {
-        yield return new WaitForSeconds(1f); // Wait for 1 second before Roshi's turn
+        yield return new WaitForSeconds(1f); // Add delay before AI move
+
+        // Find a random empty field
         int randomIndex = Random.Range(0, ticTacToeFields.Length);
-        TicTacToe randomField = ticTacToeFields[randomIndex]; // Get a random TicTacToe field
-        while(randomField.GetSymbol() != TicTacToeSymbols.Empty)
+        TicTacToe randomField = ticTacToeFields[randomIndex];
+
+        // Keep searching until an empty field is found
+        while (randomField.GetSymbol() != TicTacToeSymbols.Empty)
         {
-            randomIndex = Random.Range(0, ticTacToeFields.Length); // Get a new random index if the field is not empty
-            randomField = ticTacToeFields[randomIndex]; // Update the random field
+            randomIndex = Random.Range(0, ticTacToeFields.Length);
+            randomField = ticTacToeFields[randomIndex];
         }
-        PlaceSymbol(randomField, TicTacToeSymbols.O); // Place an O symbol in the random field
-        SetColliderForEmptyFields(); // Set colliders for empty fields
+
+        PlaceSymbol(randomField, TicTacToeSymbols.O); // Place AI symbol
+        SetColliderForEmptyFields(); // Update field interactivity
     }
 
-    // set collider for all fields
+    /// <summary>
+    /// Sets collider state for all TicTacToe fields uniformly.
+    /// </summary>
+    /// <param name="setCollider">True to enable colliders, false to disable</param>
     public void SetColliderForAllFields(bool setCollider)
     {
         foreach (var item in ticTacToeFields)
         {
-            item.GetComponent<Collider>().enabled = setCollider; // Enable or disable colliders for all TicTacToe fields
+            item.GetComponent<Collider>().enabled = setCollider;
         }
     }
 
-    // set collider for each field that has symbol empty to true
+    /// <summary>
+    /// Enables colliders only for empty fields, allowing player interaction.
+    /// Disables colliders for occupied fields to prevent overwriting.
+    /// </summary>
     public void SetColliderForEmptyFields()
     {
         foreach (var item in ticTacToeFields)
         {
             if (item.GetSymbol() == TicTacToeSymbols.Empty)
             {
-                item.GetComponent<Collider>().enabled = true; // Enable colliders for empty fields
+                item.GetComponent<Collider>().enabled = true; // Allow clicks on empty fields
             }
             else
             {
-                item.GetComponent<Collider>().enabled = false; // Disable colliders for occupied fields
+                item.GetComponent<Collider>().enabled = false; // Prevent clicks on occupied fields
             }
         }
     }
 
-
+    /// <summary>
+    /// Checks all possible win conditions (rows, columns, diagonals) and handles game end scenarios.
+    /// Also detects draw conditions when all fields are occupied.
+    /// </summary>
     private void CheckIfWon()
     {
-        // check all rows, columns and diagonals for a win condition
+        // Check all rows, columns and diagonals for win conditions
         for (int i = 0; i < 3; i++)
         {
-            // Check rows
-            if (ticTacToeFields[i * 3].GetSymbol() == ticTacToeFields[i * 3 + 1].GetSymbol() && ticTacToeFields[i * 3 + 1].GetSymbol() == ticTacToeFields[i * 3 + 2].GetSymbol() && ticTacToeFields[i * 3].GetSymbol() != TicTacToeSymbols.Empty)
+            // Check horizontal rows (0-2, 3-5, 6-8)
+            if (ticTacToeFields[i * 3].GetSymbol() == ticTacToeFields[i * 3 + 1].GetSymbol() &&
+                ticTacToeFields[i * 3 + 1].GetSymbol() == ticTacToeFields[i * 3 + 2].GetSymbol() &&
+                ticTacToeFields[i * 3].GetSymbol() != TicTacToeSymbols.Empty)
             {
                 EndRound(ticTacToeFields[i * 3].GetSymbol());
                 return;
             }
-            // Check columns
-            if (ticTacToeFields[i].GetSymbol() == ticTacToeFields[i + 3].GetSymbol() && ticTacToeFields[i + 3].GetSymbol() == ticTacToeFields[i + 6].GetSymbol() && ticTacToeFields[i].GetSymbol() != TicTacToeSymbols.Empty)
+
+            // Check vertical columns (0-3-6, 1-4-7, 2-5-8)
+            if (ticTacToeFields[i].GetSymbol() == ticTacToeFields[i + 3].GetSymbol() &&
+                ticTacToeFields[i + 3].GetSymbol() == ticTacToeFields[i + 6].GetSymbol() &&
+                ticTacToeFields[i].GetSymbol() != TicTacToeSymbols.Empty)
             {
                 EndRound(ticTacToeFields[i].GetSymbol());
                 return;
             }
-            // Check diagonals
-            if (i == 0) // Check diagonals
+
+            // Check diagonal win conditions (only on first iteration)
+            if (i == 0)
             {
-                if (ticTacToeFields[0].GetSymbol() == ticTacToeFields[4].GetSymbol() && ticTacToeFields[4].GetSymbol() == ticTacToeFields[8].GetSymbol() && ticTacToeFields[0].GetSymbol() != TicTacToeSymbols.Empty)
+                // Check main diagonal (0-4-8)
+                if (ticTacToeFields[0].GetSymbol() == ticTacToeFields[4].GetSymbol() &&
+                    ticTacToeFields[4].GetSymbol() == ticTacToeFields[8].GetSymbol() &&
+                    ticTacToeFields[0].GetSymbol() != TicTacToeSymbols.Empty)
                 {
                     EndRound(ticTacToeFields[0].GetSymbol());
                     return;
                 }
-                if (ticTacToeFields[2].GetSymbol() == ticTacToeFields[4].GetSymbol() && ticTacToeFields[4].GetSymbol() == ticTacToeFields[6].GetSymbol() && ticTacToeFields[2].GetSymbol() != TicTacToeSymbols.Empty)
+
+                // Check anti-diagonal (2-4-6)
+                if (ticTacToeFields[2].GetSymbol() == ticTacToeFields[4].GetSymbol() &&
+                    ticTacToeFields[4].GetSymbol() == ticTacToeFields[6].GetSymbol() &&
+                    ticTacToeFields[2].GetSymbol() != TicTacToeSymbols.Empty)
                 {
                     EndRound(ticTacToeFields[2].GetSymbol());
                     return;
                 }
             }
-            // check if all fields are occupied and no winner is found
-            if (placeCount == 9 && i == 2) // If all fields are occupied and it's the last iteration
+
+            // Check for draw condition (all fields occupied, no winner)
+            if (placeCount == 9 && i == 2)
             {
-                win_loss_text.text = "It's a draw!"; // Display a draw message
-                ResetGame(); // Reset the game after a draw
+                win_loss_text.text = "It's a draw!";
+                ResetGame();
                 return;
             }
         }
-
-
     }
 
+    /// <summary>
+    /// Handles the end of a round by updating win/loss counters and resetting the game.
+    /// </summary>
+    /// <param name="winnerSymbol">The symbol that won the round</param>
     private void EndRound(TicTacToeSymbols winnerSymbol)
     {
+        // Update win/loss statistics
         if (winnerSymbol == TicTacToeSymbols.X)
         {
-            timesWon++; // Increment the win count for X
+            timesWon++; // Player victory
         }
         else if (winnerSymbol == TicTacToeSymbols.O)
         {
-            timesLost++; // Increment the loss count for O
+            timesLost++; // AI victory
         }
-        win_loss_text.text = $"Win/Lose: {timesWon}/{timesLost}"; // Reset the win/loss text to show the current score
-        // Reset the game after a win/loss
-        ResetGame();
+
+        win_loss_text.text = $"Win/Lose: {timesWon}/{timesLost}"; // Update score display
+        ResetGame(); // Prepare for next round
     }
 
+    /// <summary>
+    /// Resets the game board to its initial state for a new round.
+    /// Clears all symbols, resets field states, and enables player interaction.
+    /// </summary>
     private void ResetGame()
     {
+        // Clear all field symbols and enable interaction
         foreach (var field in ticTacToeFields)
         {
-            field.SetSymbol(TicTacToeSymbols.Empty); // Reset all TicTacToe fields to empty
-            field.GetComponent<Collider>().enabled = true; // Enable colliders for all fields
+            field.SetSymbol(TicTacToeSymbols.Empty); // Reset field to empty state
+            field.GetComponent<Collider>().enabled = true; // Enable player clicks
         }
+
+        // Destroy all placed symbol GameObjects
         for (int i = 0; i < placedSymbols.Count; i++)
         {
-            Destroy(placedSymbols[i]); // Destroy all placed symbols
+            Destroy(placedSymbols[i]);
         }
-        placedSymbols.Clear(); // Clear the list of placed symbols
-        placeCount = 0; // Reset the place count
-        isFirstRound = true; // Reset the first round flag
+
+        // Reset game state variables
+        placedSymbols.Clear(); // Clear the tracking list
+        placeCount = 0; // Reset placement counter
+        isFirstRound = true; // Mark as first round for dialogue purposes
     }
 
-
-    //funtion to get or set the IsFirstRound property
+    /// <summary>
+    /// Property to get or set the first round flag, used for dialogue and tutorial systems.
+    /// </summary>
     public bool IsFirstRoundF
     {
         get { return isFirstRound; }
         set { isFirstRound = value; }
     }
-
 }

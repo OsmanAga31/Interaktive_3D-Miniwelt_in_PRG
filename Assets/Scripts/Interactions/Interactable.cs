@@ -1,25 +1,31 @@
 using UnityEngine;
 
+/// <summary>
+/// Base class for interactable objects. Provides core logic for grabbing, releasing,
+/// and moving objects in response to player interaction.
+/// </summary>
 public class Interactable : MonoBehaviour
 {
-    private Rigidbody rb; // Rigidbody component for physics interactions
+    private Rigidbody rb;
 
     [Header("Grab Settings")]
-    [SerializeField] private bool isGrabable; // to check if the object is grabable
-    [SerializeField] private float grabDistance = 2.0f; // Maximum distance to grab the object
-    [SerializeField] private float lerpSpeed; // Speed at which the object will lerp to the player's hand
-    private bool isGrabbed = false; // to check if the object is grabbed
-    private GameObject grabableEmpty; // Empty GameObject to hold grabable items so they are not in the DontDestroyOnload list
-    private Transform playerHands; // Reference to the player's hand
+    [SerializeField] private bool isGrabable;
+    [SerializeField] private float grabDistance = 2.0f;
+    [SerializeField] private float lerpSpeed;
+    private bool isGrabbed = false;
+    private GameObject grabableEmpty;
+    private Transform playerHands;
 
-
+    /// <summary>
+    /// Initializes references to Rigidbody, grabable container, and player hand.
+    /// </summary>
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         grabableEmpty = GameObject.Find("GrabableEmpty");
         if (playerHands == null)
         {
-            playerHands = GameObject.Find("PlayerHands").transform; // Assuming the player's hand is named "PlayerHand"
+            playerHands = GameObject.Find("PlayerHands").transform;
             if (playerHands == null)
             {
                 Debug.LogWarning("Player hand not found in the scene. Please ensure there is a GameObject named 'PlayerHand'.");
@@ -27,15 +33,22 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    // just to interact with the object
+    /// <summary>
+    /// Default interaction method. Override in derived classes for custom behavior.
+    /// </summary>
     public virtual void Interact()
     {
-        // Default implementation does nothing
         Debug.Log("Using " + gameObject.name);
         return;
     }
 
-    //grabbing the object with lerping it to the player hand
+    /// <summary>
+    /// Handles grabbing and releasing logic for the object.
+    /// If already grabbed or the player's hand is occupied, releases the object.
+    /// Otherwise, grabs the object if within range.
+    /// </summary>
+    /// <param name="playerHandTransform">Transform of the player's hand</param>
+    /// <returns>True if interaction succeeded, otherwise false</returns>
     public virtual bool Interact(Transform playerHandTransform)
     {
         if (rb == null)
@@ -43,11 +56,11 @@ public class Interactable : MonoBehaviour
             Debug.LogWarning("Cannot grab object without a Rigidbody.");
             return false;
         }
+        // Release if already grabbed or if the player's hand is not empty
         if (isGrabbed || playerHandTransform.childCount > 0)
         {
-            //transform.SetParent(grabableEmpty.transform); // Unparent the object if already held
-            rb.isKinematic = false; // Re-enable physics
-            isGrabbed = false; // Set isGrabbed to false
+            rb.isKinematic = false;
+            isGrabbed = false;
             Debug.Log("Released " + gameObject.name);
             return true;
         }
@@ -55,38 +68,41 @@ public class Interactable : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, playerHandTransform.position);
         if (distanceToPlayer <= grabDistance)
         {
-            // Grab the object by parenting it to the player's hand
-            rb.isKinematic = true; // Disable physics while holding
-            // disable collider
-            //transform.SetParent(playerHandTransform);
+            rb.isKinematic = true;
             isGrabbed = true;
-            //StartCoroutine(LerpToHand(playerHandTransform, lerpSpeed));
             Debug.Log("Grabbed " + gameObject.name);
         }
         else
         {
             Debug.Log("Object is too far away to grab.");
         }
-        
-        return IsGrabable; // Return the grab state
+        return IsGrabable;
     }
 
+    /// <summary>
+    /// Handles movement logic for the grabbed object in FixedUpdate.
+    /// </summary>
     void FixedUpdate()
     {
         Move(Time.fixedDeltaTime);
     }
 
+    /// <summary>
+    /// Moves the object towards the player's hand if grabbed, using linear interpolation.
+    /// </summary>
+    /// <param name="deltaTime">Time since last update</param>
     private void Move(float deltaTime)
     {
         if (isGrabbed)
         {
-            Vector3 startPosition = transform.position; // Update start position in case the object moves
-            Vector3 targetPosition = playerHands.position; // Update target position in case the hand moves
+            Vector3 startPosition = transform.position;
+            Vector3 targetPosition = playerHands.position;
             transform.position = Vector3.MoveTowards(startPosition, targetPosition, lerpSpeed * deltaTime);
         }
     }
 
-    // getter and setter for isGrabable
+    /// <summary>
+    /// Gets or sets whether the object is grabable.
+    /// </summary>
     public bool IsGrabable { get => isGrabable; set => isGrabable = value; }
-
 }

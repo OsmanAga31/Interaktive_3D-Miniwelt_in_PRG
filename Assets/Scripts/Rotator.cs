@@ -1,32 +1,32 @@
 using UnityEngine;
 
+/// <summary>
+/// Rotates the GameObject around specified axes at a configurable speed,
+/// with the option to use world or local space.
+/// </summary>
 public class Rotator : MonoBehaviour
 {
     [SerializeField] private float xRotation;
     [SerializeField] private float yRotation;
     [SerializeField] private float zRotation;
     [SerializeField] private float multiplier = 1.0f;
-    [SerializeField] private bool worldSpace = false; // Use world space rotation if true
+    [SerializeField] private bool worldSpace = false;
 
     private Space spc;
 
+    /// <summary>
+    /// Updates the rotation space and applies rotation every frame.
+    /// </summary>
     void Update()
     {
-        // Check if the object should rotate in world space or local space
-        if (worldSpace)
-        {
-            spc = Space.World;
-        }
-        else
-        {
-            spc = Space.Self;
-        }
+        // Select rotation space based on the worldSpace flag
+        spc = worldSpace ? Space.World : Space.Self;
         Rotate();
-        //    // Rotate the object around its local axes
-        //    transform.Rotate(xRotation * multiplier * Time.deltaTime, 
-        //                     yRotation * multiplier * Time.deltaTime, 
-        //                     zRotation * multiplier * Time.deltaTime);
     }
+
+    /// <summary>
+    /// Rotates the object around the X, Y, and Z axes using the selected space.
+    /// </summary>
     private void Rotate()
     {
         transform.Rotate(Vector3.right * xRotation * multiplier * Time.deltaTime, spc);
