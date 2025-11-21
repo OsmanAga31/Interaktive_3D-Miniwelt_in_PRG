@@ -24,7 +24,5 @@ public class PersistanceManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Lock the cursor to the center of the screen
-        Cursor.lockState = CursorLockMode.Locked;
     }
 }
