@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 /// <summary>
@@ -6,15 +7,28 @@ using UnityEngine;
 /// </summary>
 public class ExitKameHouseShowroom : Interactable
 {
+    [SerializeField] private Transform teleportTarget;
     /// <summary>
     /// Handles the interaction logic for exiting the showroom.
     /// Loads the "Main" scene when called.
     /// </summary>
     public override void Interact()
     {
-        Debug.Log("Entering Kame House showroom...");
+        Debug.Log("Exitting Kame House showroom...");
 
-        // Load the main scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && teleportTarget != null)
+        {
+            Rigidbody playerRb = player.GetComponent<Rigidbody>();
+            if (playerRb != null)
+            {
+                playerRb.position = teleportTarget.position;
+            }
+        }
+
+        // unLoad the KameHouseScene scene
+        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("KameHouseShowRoom");
+        // UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+
     }
 }

@@ -14,7 +14,10 @@ public class EnterKameHouseShowroom : Interactable
     {
         Debug.Log("Entering Kame House showroom...");
 
-        // Load the KameHouseShowRoom scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("KameHouseShowRoom");
+        // Load the KameHouseShowRoom scene additively
+        UnityEngine.SceneManagement.SceneManager.LoadScene("KameHouseShowRoom", UnityEngine.SceneManagement.LoadSceneMode.Additive);
+        // UnityEngine.SceneManagement.SceneManager.LoadScene("KameHouseShowRoom");
+
+
     }
 }
