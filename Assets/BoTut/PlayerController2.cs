@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -70,10 +71,19 @@ public class PlayerController2 : MonoBehaviour
         
     }
 
+    public IEnumerator TogglePlayerMeshVisibilityDelayed(bool isVisible, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        TogglePlayerMeshVisibility(isVisible);
+    }
     public void TogglePlayerMeshVisibility(bool isVisible)
     {
         playerMesh.enabled = isVisible;
         playerVisorMesh.enabled = isVisible;
+    }
+    public void TogglePlayerMeshVisibility(bool isVisible, float delay)
+    {
+        StartCoroutine(TogglePlayerMeshVisibilityDelayed(isVisible, delay));
     }
 
     /// <summary>

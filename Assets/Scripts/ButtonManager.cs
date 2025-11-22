@@ -27,7 +27,7 @@ public class ButtonManager : MonoBehaviour
             }
 
             PlayerController2.instance.GetComponent<AudioSource>().PlayDelayed(3f);
-            StartCoroutine(DelayedPlayerVisibillity(3f, true));
+            PlayerController2.instance.TogglePlayerMeshVisibility(true, 3f);
 
         }
 
@@ -38,14 +38,6 @@ public class ButtonManager : MonoBehaviour
 
 
     }
-
-    private IEnumerator DelayedPlayerVisibillity(float delay, bool isVisible)
-    {
-        Debug.Log("Setting player mesh visibility to: " + isVisible);
-        yield return new WaitForSeconds(delay);
-        PlayerController2.instance.TogglePlayerMeshVisibility(isVisible);
-    }
-
 
     public void SettingsMenu()
     {
