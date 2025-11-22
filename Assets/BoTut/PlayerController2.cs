@@ -10,7 +10,9 @@ using static UnityEngine.InputSystem.InputAction;
 /// </summary>
 public class PlayerController2 : MonoBehaviour
 {
+    public static PlayerController2 instance;
     private PlayerInput playerInput;
+    private bool isPlayerMovementLocked;
     private Rigidbody rb;
     private Vector2 movementInput;
     private Transform cameraTransform;
@@ -21,12 +23,37 @@ public class PlayerController2 : MonoBehaviour
     [Header("Player Rotation")]
     [SerializeField] private Transform cinemachineCameraTarget;
 
+    [Header("Mesh References")]
+    [SerializeField] private MeshRenderer playerMesh;
+    [SerializeField] private MeshRenderer playerVisorMesh;
+
+    public bool IsPlayerMovementLocked
+    {
+        get { return isPlayerMovementLocked; }
+        set { isPlayerMovementLocked = value; }
+    }
+
+    private void Awake()
+    {
+        // Implement singleton pattern to persist this object across scenes
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     /// <summary>
     /// Initializes input actions, camera reference, and Rigidbody.
     /// </summary>
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
+        isPlayerMovementLocked = true;
 
         playerInput.actions["Move"].performed += OnMove;
         playerInput.actions["Move"].canceled += OnMove;
@@ -37,6 +64,16 @@ public class PlayerController2 : MonoBehaviour
         cameraTransform = Camera.main.transform;
 
         rb = GetComponent<Rigidbody>();
+
+        playerMesh = GetComponent<MeshRenderer>();
+        TogglePlayerMeshVisibility(false);
+        
+    }
+
+    public void TogglePlayerMeshVisibility(bool isVisible)
+    {
+        playerMesh.enabled = isVisible;
+        playerVisorMesh.enabled = isVisible;
     }
 
     /// <summary>
@@ -45,6 +82,7 @@ public class PlayerController2 : MonoBehaviour
     /// <param name="ctx">Input callback context containing movement vector.</param>
     public void OnMove(CallbackContext ctx)
     {
+        if (isPlayerMovementLocked) return;
         movementInput = ctx.ReadValue<Vector2>();
     }
 
@@ -54,7 +92,7 @@ public class PlayerController2 : MonoBehaviour
     /// <param name="ctx">Input callback context for jump action.</param>
     public void OnJump(CallbackContext ctx)
     {
-        if (!ctx.started && !isGrounded) return;
+        if (!ctx.started && !isGrounded || isPlayerMovementLocked) return;
         rb.AddForce(Vector3.up * jumpStrength);
     }
 

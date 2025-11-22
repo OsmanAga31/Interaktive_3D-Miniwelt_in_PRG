@@ -1,11 +1,13 @@
 using System.Collections;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ButtonManager : MonoBehaviour
 {
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private GameObject player;
+
 
     // ToDo
     // [SerializeField] private GameObject pauseMenu;
@@ -24,9 +26,24 @@ public class ButtonManager : MonoBehaviour
                 buttonText.text = "Resume";
             }
 
-            // Lock the cursor to the center of the screen
-            Cursor.lockState = CursorLockMode.Locked;
+            PlayerController2.instance.GetComponent<AudioSource>().PlayDelayed(3f);
+            StartCoroutine(DelayedPlayerVisibillity(3f, true));
+
         }
+
+        PauseMenuManager.instance.TogglePauseMenu();
+
+        // Lock the cursor to the center of the screen
+        Cursor.lockState = CursorLockMode.Locked;
+
+
+    }
+
+    private IEnumerator DelayedPlayerVisibillity(float delay, bool isVisible)
+    {
+        Debug.Log("Setting player mesh visibility to: " + isVisible);
+        yield return new WaitForSeconds(delay);
+        PlayerController2.instance.TogglePlayerMeshVisibility(isVisible);
     }
 
 
